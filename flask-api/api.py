@@ -29,7 +29,7 @@ def detect():
     # do bash thing to get frame from video
     ### bash thing
 
-    with open('smiles.jpg', 'r') as frame:
+    with open('happy_plus_sad.jpg', 'r') as frame:
         # load into variable
         body = frame.read()
         # set api request headers
@@ -58,7 +58,9 @@ def max_emotion(face):
     max_emotion_val = float("-inf")
     strongest_emotion = None
     for emotion, value in scores.iteritems():
-        if value > max_emotion_val:
+        current_emotion_val = float(value)
+        if current_emotion_val > max_emotion_val:
+            max_emotion_val = current_emotion_val
             strongest_emotion = emotion
     return strongest_emotion
 
@@ -77,7 +79,8 @@ def categorise_faces(emotion_json_string):
             "happiness":0
             }
     for face in faces:
-        emotions[max_emotion(face)] += 1
+        max_e = max_emotion(face)
+        emotions[max_e] += 1
     return emotions
 
 if __name__ == "__main__":
