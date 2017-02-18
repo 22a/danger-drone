@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import subprocess
 import httplib, urllib, base64
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -45,11 +46,39 @@ def detect():
             response = conn.getresponse()
             data = response.read()
             conn.close()
-            return data
+            emotions = categorise_faces(data)
+            return str(emotions)
 
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
-            return "hello"
+            return "err"
+
+def max_emotion(face):
+    scores = face["scores"]
+    max_emotion_val = float("-inf")
+    strongest_emotion = None
+    for emotion, value in scores.iteritems():
+        if value > max_emotion_val:
+            strongest_emotion = emotion
+    return strongest_emotion
+
+
+def categorise_faces(emotion_json_string):
+    faces = json.loads(emotion_json_string)
+    num_people = len(faces)
+    emotions = {
+            "sadness":0,
+            "neutral":0,
+            "contempt":0,
+            "disgust":0,
+            "anger":0,
+            "surprise":0,
+            "fear":0,
+            "happiness":0
+            }
+    for face in faces:
+        emotions[max_emotion(face)] += 1
+    return emotions
 
 if __name__ == "__main__":
     app.run()
