@@ -24,7 +24,7 @@ def control():
     # pass that output back to the browser
     return output
 
-@app.route('/detect', methods=['GET'])
+@app.route('/detect', methods=['POST'])
 def detect():
     # do bash thing to get frame from video
     ### bash thing

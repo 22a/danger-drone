@@ -3,16 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>hololens control</title>
+    <title>Danger Drone - Hololens Drone Control</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css" type="text/css" media="all" />
   </head>
   <body>
     <div class="container">
-      <div class="row">
+      <div class="row" id="slider-container">
         <input type="range" id="slider">
       </div>
       <div class="row val-display" id="val">
+      </div>
+      <div class="row" id="emotion-container">
+        <button type="button" class="btn btn-success btn-lg" onclick="find_emotion()">
+          Find Emotion
+        </button>
+        <button type="button" class="btn btn-info btn-lg" onclick="detect()">
+          Detect
+        </button>
       </div>
     </div>
 
