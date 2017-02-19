@@ -16,7 +16,7 @@ def control():
     # the value from the slider
     val_string = request.get_data()[1:-1]
     # the command we want to run to move the motor
-    bashCommand = "echo \"you want to send " + val_string + " to the motor\""
+    bashCommand = "gpio -g pwm 18 " + map_range(int(val_string),0,100,50,200)
     # run the command
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     # get the output, if it returns anything
@@ -52,6 +52,15 @@ def detect():
         except Exception as e:
             print("[Errno {0}] {1}".format(e.errno, e.strerror))
             return "err"
+
+def map_range(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
 
 def max_emotion(face):
     scores = face["scores"]
