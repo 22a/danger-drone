@@ -3,20 +3,20 @@ from flask_cors import CORS, cross_origin
 import subprocess
 import httplib, urllib, base64
 import json
+import urllib
+import time
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/")
-def index():
-    return "Hello World!"
 
 @app.route('/control', methods=['POST'])
 def control():
     # the value from the slider
     val_string = request.get_data()[1:-1]
     # the command we want to run to move the motor
-    bashCommand = "gpio -g pwm 18 " + map_range(int(val_string),0,100,50,200)
+    bashCommand = "gpio -g pwm 18 " + str(map_range(int(val_string),0,100,50,200))
+    print bashCommand
     # run the command
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     # get the output, if it returns anything
@@ -28,8 +28,12 @@ def control():
 def detect():
     # do bash thing to get frame from video
     ### bash thing
+    t = time.time()
+    print t
+    url = 'http://localhost/html/cam_pic.php?time=' + str(t) + '&pDelay=40000'
 
-    with open('happy_plus_sad.jpg', 'r') as frame:
+    if True:
+        frame = urllib.urlopen(url)
         # load into variable
         body = frame.read()
         # set api request headers
@@ -50,7 +54,8 @@ def detect():
             return str(emotions)
 
         except Exception as e:
-            print("[Errno {0}] {1}".format(e.errno, e.strerror))
+            # print("[Errno {0}] {1}".format(e.errno, e.strerror))
+            print e
             return "err"
 
 def map_range(value, leftMin, leftMax, rightMin, rightMax):
@@ -60,7 +65,7 @@ def map_range(value, leftMin, leftMax, rightMin, rightMax):
     # Convert the left range into a 0-1 range (float)
     valueScaled = float(value - leftMin) / float(leftSpan)
     # Convert the 0-1 range into a value in the right range.
-    return rightMin + (valueScaled * rightSpan)
+    return int(rightMin + (valueScaled * rightSpan))
 
 def max_emotion(face):
     scores = face["scores"]
@@ -93,4 +98,4 @@ def categorise_faces(emotion_json_string):
     return emotions
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
