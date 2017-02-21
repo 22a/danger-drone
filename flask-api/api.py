@@ -95,6 +95,18 @@ def categorise_faces(emotion_json_string):
     for face in faces:
         max_e = max_emotion(face)
         emotions[max_e] += 1
+    human_emotions = {
+            "sadness":"sad",
+            "neutral":"😐",
+            "contempt":"insolent",
+            "disgust":"disgusted",
+            "anger":"angry",
+            "surprise":"surprised",
+            "fear":"scared",
+            "happiness":"happy"
+            }    
+     #TODO
+     # Replace default emotions with human emotions
     return emotions
 
 if __name__ == "__main__":
